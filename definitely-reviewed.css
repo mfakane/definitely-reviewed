@@ -1,0 +1,580 @@
+/*
+ * definitely-reviewed.css
+ * A responsive scholarly theme for content that has definitely been reviewed.
+ *
+ * Core principles:
+ * - semantic HTML first
+ * - Markdown-friendly markup
+ * - 1–2 responsive columns
+ * - print-friendly
+ * - no JavaScript required for layout
+ *
+ * Usage:
+ *   <article class="dr-paper">
+ *     <header class="dr-header">...</header>
+ *     <div class="dr-body">...</div>
+ *   </article>
+ *
+ * Theme:
+ *   <html data-dr-theme="paper"> ... </html>
+ * Omit data-dr-theme for the default web theme.
+ */
+
+:root {
+  --dr-paper: #ffffff;
+  --dr-ink: #181818;
+  --dr-muted: #66645f;
+  --dr-faint: #8b8984;
+  --dr-rule: #d6d2ca;
+  --dr-column-rule: #d6d2ca;
+  --dr-page: #eceae6;
+  --dr-accent: #77213f;
+  --dr-code-bg: #f4f2ee;
+  --dr-code-border: #d8d3ca;
+  --dr-shadow: 0 12px 36px rgb(0 0 0 / 0.13);
+  --dr-radius: 0.35rem;
+
+  --dr-paper-max: 72rem;
+  --dr-column-width: 28rem;
+  --dr-column-gap: clamp(2rem, 4vw, 3.25rem);
+  --dr-pad-inline: clamp(1.25rem, 5vw, 4rem);
+  --dr-pad-block: clamp(1.5rem, 4vw, 3.5rem);
+
+  --dr-font-serif: Georgia, "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif;
+  --dr-font-stamp: Georgia, "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif;
+  --dr-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --dr-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+[data-dr-theme="paper"] {
+  --dr-paper: #fff;
+  --dr-ink: #000;
+  --dr-muted: #333;
+  --dr-faint: #555;
+  --dr-rule: #333;
+  --dr-column-rule: transparent;
+  --dr-page: #fff;
+  --dr-accent: #000;
+  --dr-code-bg: #fff;
+  --dr-code-border: #888;
+  --dr-shadow: none;
+  --dr-radius: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  *:not([data-dr-theme="paper"]) {
+    --dr-paper: #171717;
+    --dr-ink: #eeeeec;
+    --dr-muted: #b4b1aa;
+    --dr-faint: #918e88;
+    --dr-rule: #4d4a45;
+    --dr-column-rule: #4d4a45;
+    --dr-page: #0f0f0f;
+    --dr-accent: #d68ba5;
+    --dr-code-bg: #20201f;
+    --dr-code-border: #4b4945;
+    --dr-shadow: 0 12px 36px rgb(0 0 0 / 0.35);
+  }
+}
+
+.dr-page {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--dr-page);
+  color: var(--dr-ink);
+  font-family: var(--dr-font-serif);
+  line-height: 1.62;
+  text-rendering: optimizeLegibility;
+}
+
+.dr-shell {
+  max-width: calc(var(--dr-paper-max) + 2rem);
+  margin-inline: auto;
+  padding: clamp(0.75rem, 2vw, 1.5rem) 1rem 3rem;
+}
+
+.dr-paper {
+  container-type: inline-size;
+  max-width: var(--dr-paper-max);
+  margin-inline: auto;
+  padding: var(--dr-pad-block) var(--dr-pad-inline);
+  background: var(--dr-paper);
+  box-shadow: var(--dr-shadow);
+  border-radius: var(--dr-radius);
+  position: relative;
+}
+
+.dr-header {
+  text-align: center;
+  border-bottom: 1px solid var(--dr-rule);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dr-kicker {
+  margin: 0 0 0.5rem;
+  font-family: var(--dr-font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dr-muted);
+}
+
+.dr-title {
+  margin: 0.15rem auto 0.75rem;
+  max-width: 20ch;
+  font-size: clamp(1.85rem, 4.5vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.dr-authors,
+.dr-affiliation,
+.dr-meta {
+  margin: 0.2rem 0;
+  font-family: var(--dr-font-sans);
+  font-size: 0.9rem;
+  color: var(--dr-muted);
+}
+
+.dr-abstract {
+  max-width: 52rem;
+  margin: 1.5rem auto 0;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.dr-abstract::before {
+  content: "Abstract — ";
+  font-weight: 700;
+}
+
+.dr-body {
+  columns: var(--dr-column-width) 2;
+  column-gap: var(--dr-column-gap);
+  column-rule: 1px solid var(--dr-column-rule);
+}
+
+.dr-body :is(h1, h2, h3, h4) {
+  break-after: avoid-column;
+  text-wrap: balance;
+}
+
+.dr-body h1 {
+  margin: 1.55rem 0 0.55rem;
+  font-family: var(--dr-font-sans);
+  font-size: 1.2rem;
+  line-height: 1.45;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.dr-body h2 {
+  margin: 1.55rem 0 0.55rem;
+  font-family: var(--dr-font-sans);
+  font-size: 1.02rem;
+  line-height: 1.35;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.dr-body h3 {
+  margin: 1.25rem 0 0.45rem;
+  font-family: var(--dr-font-sans);
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.dr-body h4 {
+  margin: 1rem 0 0.4rem;
+  font-family: var(--dr-font-sans);
+  font-size: 0.92rem;
+}
+
+.dr-body p,
+.dr-body li {
+  orphans: 3;
+  widows: 3;
+}
+
+.dr-body p {
+  margin: 0.56rem 0;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.dr-body ul,
+.dr-body ol {
+  padding-left: 1.35rem;
+}
+
+.dr-body a {
+  color: var(--dr-accent);
+  text-underline-offset: 0.14em;
+}
+
+.dr-body strong {
+  font-weight: 700;
+}
+
+.dr-body code {
+  font-family: var(--dr-font-mono);
+  font-size: 0.9em;
+}
+
+.dr-body :not(pre) > code {
+  padding: 0.06em 0.25em;
+  border-radius: 0.2em;
+  background: color-mix(in srgb, var(--dr-code-bg) 92%, var(--dr-ink) 8%);
+}
+
+.dr-body pre {
+  margin: 0.9rem 0;
+  padding: 0.9rem 1rem;
+  overflow: auto;
+  border: 1px solid var(--dr-code-border);
+  border-radius: 0.28rem;
+  background: var(--dr-code-bg);
+  font: 0.82rem/1.5 var(--dr-font-mono);
+  tab-size: 2;
+  break-inside: avoid;
+}
+
+.dr-body blockquote {
+  margin: 0.9rem 0;
+  padding: 0.1rem 0 0.1rem 0.9rem;
+  border-left: 0.18rem solid var(--dr-accent);
+  color: var(--dr-muted);
+  break-inside: avoid;
+}
+
+.dr-body table {
+  width: 100%;
+  margin: 0.85rem 0;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  break-inside: avoid;
+}
+
+.dr-body th,
+.dr-body td {
+  padding: 0.38rem 0.5rem;
+  border-top: 1px solid var(--dr-rule);
+  border-bottom: 1px solid var(--dr-rule);
+  vertical-align: top;
+}
+
+.dr-body th {
+  text-align: left;
+  font-family: var(--dr-font-sans);
+  font-size: 0.82rem;
+}
+
+.dr-body :is(img, svg, video, canvas) {
+  max-width: 100%;
+  height: auto;
+}
+
+.dr-figure,
+.dr-listing {
+  margin: 1rem 0 1.35rem;
+  break-inside: avoid;
+}
+
+.dr-figure > :first-child,
+.dr-listing > :first-child {
+  margin-top: 0;
+}
+
+.dr-caption {
+  margin: 0.52rem auto 0;
+  max-width: 54rem;
+  color: var(--dr-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+/* Full-width material that interrupts the multi-column flow. */
+.dr-wide {
+  column-span: all;
+  break-inside: avoid;
+}
+
+/* Keep a heading visually attached to a following full-width figure/listing. */
+.dr-body :is(h1, h2, h3, h4):has(+ .dr-wide) {
+  column-span: all;
+  break-after: avoid;
+  margin-bottom: 0.7rem;
+}
+
+/* Useful when a renderer emits <figure class="dr-figure dr-wide">. */
+.dr-body .dr-wide + :is(h1, h2, h3, h4) {
+  break-before: avoid-column;
+}
+
+.dr-equation {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0.9rem 0 1.1rem;
+  text-align: center;
+  break-inside: avoid;
+}
+
+.dr-note {
+  margin: 0.9rem 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--dr-rule);
+  border-left: 0.22rem solid var(--dr-accent);
+  background: color-mix(in srgb, var(--dr-paper) 94%, var(--dr-accent) 6%);
+  font-size: 0.9rem;
+  break-inside: avoid;
+}
+
+.dr-references {
+  font-size: 0.88rem;
+}
+
+.dr-references li {
+  margin-bottom: 0.4rem;
+}
+
+.dr-references a {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, var(--dr-accent) 55%, transparent);
+  text-underline-offset: 0.15em;
+}
+
+.dr-references a:hover {
+  color: var(--dr-accent);
+}
+
+/* Decorative stamps: intentionally unserious, opt-in only. */
+.dr-stamp {
+  --dr-stamp-color: #962f2f;
+  position: relative;
+  display: inline-block;
+  margin: 0.5em 0.5em;
+  padding: 0.5em 0.35em 0.45em 0.35em;
+  border: 0.125em solid currentColor;
+  border-left: none;
+  border-right: none;
+  color: var(--dr-stamp-color);
+  font: 700 0.84rem/1 var(--dr-font-stamp);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  opacity: 0.78;
+  transform: rotate(-6deg);
+  mix-blend-mode: multiply;
+  user-select: none;
+  outline: 0.25em solid currentColor;
+  outline-offset: 0.25em;
+}
+
+[data-dr-lang="ja"] .dr-stamp,
+html[lang="ja"] .dr-stamp {
+    letter-spacing: 0.25em;
+    padding-right: 0.175em
+}
+
+.dr-stamp[data-kind="confidential"] { --dr-stamp-color: #6f2947; }
+.dr-stamp[data-kind="accepted"]     { --dr-stamp-color: #2e6947; }
+.dr-stamp[data-kind="preprint"]     { --dr-stamp-color: #365b7b; }
+.dr-stamp[data-kind="rejected"]     { --dr-stamp-color: #ba2a2a; }
+
+[data-dr-theme="paper"] .dr-stamp {
+  filter: grayscale(0.1);
+}
+
+.dr-paper[data-stamp]::after {
+  content: attr(data-stamp);
+  position: absolute;
+  top: 2.2rem;
+  right: 2rem;
+  z-index: 2;
+  display: block;
+  padding: 0.5em 0.35em 0.45em 0.35em;
+  border: 0.125em solid currentColor;
+  border-left: none;
+  border-right: none;
+  color: #ba2a2a;
+  font: 700 clamp(0.68rem, 1.4vw, 0.9rem)/1 var(--dr-font-stamp);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  opacity: 0.62;
+  transform: rotate(7deg);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  outline: 0.25em solid currentColor;
+  outline-offset: 0.25em;
+}
+
+[data-dr-lang="ja"] .dr-paper[data-stamp]::after,
+html[lang="ja"] .dr-paper[data-stamp]::after {
+  letter-spacing: 0.25em;
+  padding-right: 0.175em;
+}
+
+.dr-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  max-width: var(--dr-paper-max);
+  margin: 0 auto 0.7rem;
+  font-family: var(--dr-font-sans);
+}
+
+.dr-toolbar button {
+  appearance: none;
+  border: 1px solid var(--dr-rule);
+  border-radius: 999px;
+  padding: 0.42rem 0.7rem;
+  background: var(--dr-paper);
+  color: var(--dr-ink);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.dr-toolbar button[aria-pressed="true"] {
+  background: var(--dr-ink);
+  color: var(--dr-paper);
+}
+
+@container (max-width: 44rem) {
+  .dr-body {
+    columns: 1;
+    column-rule: 0;
+  }
+
+  .dr-body :is(h1, h2, h3, h4):has(+ .dr-wide) {
+    column-span: none;
+  }
+
+  .dr-wide {
+    column-span: none;
+  }
+
+  .dr-paper[data-stamp]::after {
+    position: static;
+    display: table;
+    margin: 0 0 1rem auto;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  :root {
+    --dr-paper: #fff;
+    --dr-ink: #000;
+    --dr-muted: #333;
+    --dr-faint: #555;
+    --dr-rule: #999;
+    --dr-page: #fff;
+    --dr-accent: #000;
+    --dr-code-bg: #fff;
+    --dr-code-border: #888;
+  }
+
+  .dr-page {
+    background: #fff;
+  }
+
+  .dr-shell {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .dr-paper {
+    max-width: none;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .dr-toolbar,
+  .dr-no-print {
+    display: none !important;
+  }
+
+  .dr-body {
+    columns: 2;
+    column-gap: 10mm;
+    column-rule: 0;
+  }
+
+  .dr-body a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .dr-paper[data-stamp]::after {
+    color: #555;
+    opacity: 0.55;
+  }
+}
+
+
+/* Demo-only controls. Not required by the theme itself. */
+.dr-demo-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 auto 0.75rem;
+  font-family: var(--dr-font-mono);
+}
+
+.dr-demo-group {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.25rem 0.3rem;
+  border: 1px solid var(--dr-rule);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dr-paper) 92%, transparent);
+}
+
+.dr-demo-group button {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem 0.3rem 0.7rem;
+  background: transparent;
+  color: var(--dr-ink);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.dr-demo-group button[aria-pressed="true"] {
+  background: var(--dr-ink);
+  color: var(--dr-paper);
+}
+
+html[data-dr-lang="en"] [data-dr-content-lang="ja"],
+html[data-dr-lang="ja"] [data-dr-content-lang="en"] {
+  display: none;
+}
+
+@media (max-width: 42rem) {
+  .dr-demo-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dr-demo-group {
+    justify-content: center;
+  }
+}
+
+@media print {
+  .dr-demo-toolbar {
+    display: none !important;
+  }
+}

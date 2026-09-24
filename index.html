@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en" data-dr-lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>definitely-reviewed — Responsive Scholarly Theme</title>
+
+  <link rel="stylesheet" href="./definitely-reviewed.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+</head>
+<body class="dr-page">
+  <main class="dr-shell">
+    <nav class="dr-demo-toolbar dr-no-print" aria-label="Demo settings">
+      <div class="dr-demo-group" aria-label="Language">
+        <button type="button" data-lang-choice="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang-choice="ja" aria-pressed="false">JA</button>
+      </div>
+
+      <div class="dr-demo-group" aria-label="Appearance">
+        <button type="button" data-theme-choice="web" aria-pressed="true">Web</button>
+        <button type="button" data-theme-choice="paper" aria-pressed="false">Paper</button>
+      </div>
+    </nav>
+
+    <div data-dr-content-lang="en">
+      <article class="dr-paper" data-stamp="Definitely Reviewed">
+      <header class="dr-header">
+        <p class="dr-kicker">definitely-reviewed.css · Technical Report DR-001</p>
+        <h1 class="dr-title">A Responsive Scholarly Theme for Markdown-Derived Documents</h1>
+        <p class="dr-authors">MF Akane</p>
+        <p class="dr-affiliation">Department of Suspiciously Formal Web Typography</p>
+        <p class="dr-meta">Received: immediately · Reviewed: definitely · Accepted: somehow</p>
+
+        <div class="dr-abstract">
+          We present <em>definitely-reviewed</em>, a responsive scholarly CSS theme
+          for Markdown-derived documents. The proposed method increases perceived
+          academic formality while preserving ordinary semantic HTML, responsive
+          behavior, printability, and authoring laziness.
+        </div>
+      </header>
+
+      <div class="dr-body">
+        <h2>1. Introduction</h2>
+        <p>
+          Technical writing on the Web is commonly presented as a single flowing
+          column. This is comfortable, but insufficiently intimidating. The present
+          work investigates whether modern CSS can provide a more scholarly visual
+          language without requiring authors to abandon Markdown.
+        </p>
+        <p>
+          The design goal is deliberately conservative: content should remain useful
+          if the stylesheet is removed. Layout therefore lives in CSS while prose,
+          headings, figures, tables, equations, and code remain ordinary HTML.
+        </p>
+
+        <h2>2. Utility Model</h2>
+        <p>
+          We define the utility of a scholarly theme by the entirely rigorous and
+          dimensionally questionable expression
+        </p>
+
+        <div class="dr-equation">
+          \[
+            U_{\mathrm{DR}}
+            =
+            \frac{
+              M^\alpha L^\beta F^\gamma
+            }{
+              1 + W
+            },
+          \]
+        </div>
+
+        <p>
+          where \(M\) denotes Markdown simplicity, \(L\) legibility, \(F\) perceived
+          formality, and \(W\) author effort. The preferred operating point maximizes
+          formality without asking the author to become a TeX package maintainer.
+        </p>
+
+        <h2>3. Multi-column Layout</h2>
+        <p>
+          The layout does not explicitly switch between a mobile and desktop mode.
+          Instead, it specifies a preferred column width and lets the browser choose
+          the feasible number of columns.
+        </p>
+
+        <figure class="dr-listing">
+          <pre><code>.dr-body {
+  columns: 28rem 2;
+  column-gap: 3rem;
+}
+
+.dr-body h2 {
+  break-after: avoid-column;
+}</code></pre>
+          <figcaption class="dr-caption">
+            Listing 1. A preferred measure is more useful than a hard-coded breakpoint.
+          </figcaption>
+        </figure>
+
+        <p>
+          At narrow widths the article naturally becomes one column. At wider widths,
+          it becomes two columns while maintaining an approximately readable line
+          measure.
+        </p>
+
+        <h2>4. Architecture</h2>
+        <figure class="dr-figure dr-wide">
+          <div class="mermaid">
+flowchart LR
+    MD[Markdown] --> HTML[Semantic HTML]
+    TEX[TeX] --> KATEX[KaTeX / MathJax]
+    MM[Mermaid] --> SVG[SVG]
+    HTML --> CSS[definitely-reviewed.css]
+    KATEX --> CSS
+    SVG --> CSS
+    CSS --> WEB[Responsive Web]
+    CSS --> PRINT[Print / PDF]
+          </div>
+          <figcaption class="dr-caption">
+            Figure 1. Text, mathematics, and diagrams converge on ordinary HTML before
+            the final typographic layer is applied.
+          </figcaption>
+        </figure>
+
+        <h2>5. Wide Material and Fragmentation</h2>
+        <p>
+          Multi-column layout introduces fragmentation boundaries. A naïve full-width
+          figure can therefore leave its heading stranded at the bottom of the
+          preceding column. The theme addresses this without wrapping every section
+          in a special container.
+        </p>
+
+        <figure class="dr-listing dr-wide">
+          <pre><code>.dr-wide {
+  column-span: all;
+}
+
+.dr-body :is(h1, h2, h3, h4):has(+ .dr-wide) {
+  column-span: all;
+  break-after: avoid;
+}</code></pre>
+          <figcaption class="dr-caption">
+            Listing 2. A full-width item promotes its immediately preceding heading
+            to the same spanning context.
+          </figcaption>
+        </figure>
+
+        <h2>6. Evaluation</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Configuration</th>
+              <th>Formality</th>
+              <th>Effort</th>
+              <th>Definitely reviewed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Plain Markdown</td>
+              <td>0.31</td>
+              <td>1.00</td>
+              <td>0.12</td>
+            </tr>
+            <tr>
+              <td>Generic blog CSS</td>
+              <td>0.54</td>
+              <td>1.03</td>
+              <td>0.37</td>
+            </tr>
+            <tr>
+              <td><strong>definitely-reviewed</strong></td>
+              <td><strong>0.97</strong></td>
+              <td><strong>1.04</strong></td>
+              <td><strong>1.00</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="dr-note">
+          Values are normalized, dimensionless, and entirely convenient.
+        </div>
+
+        <h2>7. Usage</h2>
+        <p>
+          Minimal integration requires one stylesheet and a small set of semantic
+          classes.
+        </p>
+
+        <figure class="dr-listing">
+          <pre><code>&lt;link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/definitely-reviewed@1.0.0/definitely-reviewed.css"&gt;
+
+&lt;article class="dr-paper"&gt;
+  &lt;header class="dr-header"&gt;…&lt;/header&gt;
+  &lt;div class="dr-body"&gt;…&lt;/div&gt;
+&lt;/article&gt;</code></pre>
+          <figcaption class="dr-caption">
+            Listing 3. Minimal integration.
+          </figcaption>
+        </figure>
+
+        <p>
+          Mathematics and diagrams are renderer-independent. Authors may use KaTeX,
+          MathJax, Mermaid, or pre-rendered SVG. The theme merely provides the
+          surrounding typography.
+        </p>
+
+        <h2>8. Administrative Markings</h2>
+        <p>
+          For documents requiring additional authority, decorative stamps are
+          provided as an opt-in feature.
+        </p>
+
+        <p>
+          <span class="dr-stamp" data-kind="confidential">Confidential</span>
+          &nbsp;
+          <span class="dr-stamp" data-kind="rejected">Rejected</span>
+          &nbsp;
+          <span class="dr-stamp" data-kind="accepted">Accepted</span>
+        </p>
+
+        <h2>9. Threats to Validity</h2>
+        <p>
+          The primary threat to validity is that no peer review was conducted.
+        </p>
+
+        <blockquote>
+          Reviewer 2: The visual appearance of rigor should not be confused with
+          methodological rigor.
+        </blockquote>
+
+        <h2>10. Conclusion</h2>
+        <p>
+          Modern CSS is sufficiently expressive to reproduce useful scholarly
+          conventions while remaining responsive and compatible with Markdown-first
+          authoring workflows.
+        </p>
+
+        <div class="dr-equation">
+          \[
+            \mathrm{Markdown} + \mathrm{CSS}
+            \xrightarrow{\text{definitely-reviewed}}
+            \mathrm{Academia}
+          \]
+        </div>
+
+        <p><strong>Markdown in. Academia out.</strong></p>
+
+        <h2>References</h2>
+        <ol class="dr-references">
+          <li>
+            W3C CSS Working Group,
+            <a href="https://www.w3.org/TR/css-multicol-1/">
+              <cite>CSS Multi-column Layout Module Level 1</cite>
+            </a>, 2024.
+          </li>
+          <li>
+            W3C CSS Working Group,
+            <a href="https://www.w3.org/TR/css-break-3/">
+              <cite>CSS Fragmentation Module Level 3</cite>
+            </a>.
+          </li>
+          <li>
+            KaTeX Contributors,
+            <a href="https://katex.org/docs/">
+              <cite>KaTeX Documentation</cite>
+            </a>.
+          </li>
+          <li>
+            Mermaid Contributors,
+            <a href="https://mermaid.js.org/">
+              <cite>Mermaid Documentation</cite>
+            </a>.
+          </li>
+          <li>
+            Akane, M. F.,
+            <a href="http://github.com/mfakane/definitely-reviewed">
+              <cite>definitely-reviewed, GitHub repository</cite>
+            </a>, 2026.
+          </li>
+        </ol>
+      </div>
+    </article>
+    </div>
+
+    <div data-dr-content-lang="ja">
+      <article class="dr-paper" data-stamp="絶対査読済">
+      <header class="dr-header">
+        <p class="dr-kicker">definitely-reviewed.css · 技術報告 DR-JP-001</p>
+        <h1 class="dr-title">Markdown由来文書のためのレスポンシブ学術風テーマ</h1>
+        <p class="dr-authors">ミーフォ茜</p>
+        <p class="dr-affiliation">怪訝形式的ウエブ組版学科・応用学術外観研究所</p>
+        <p class="dr-meta">受付：即時 · 査読：確実 · 採択：なぜか</p>
+
+        <div class="dr-abstract">
+          本稿では、Markdown由来文書に対して学術論文風の外観を付与する
+          レスポンシブCSSテーマ <em>definitely-reviewed</em> を提案する。
+          本手法は、通常の意味論的HTMLを維持したまま、可読性、印刷適性、
+          執筆者の怠惰性、および視覚的査読済み感を同時に向上させる。
+        </div>
+      </header>
+
+      <div class="dr-body">
+        <h2>1. はじめに</h2>
+        <p>
+          Web上の技術文書は、一般に単一カラムの連続した本文として表示される。
+          これは快適ではあるが、十分に物々しくない。本研究では、著者にTeX組版への
+          全面的移行を要求することなく、現代CSSのみで学術誌的な視覚言語を導入できるかを検討する。
+        </p>
+        <p>
+          設計上の基本方針は保守的である。すなわち、スタイルシートを除去した場合でも
+          文書は通常のHTMLとして意味を保つべきである。したがって、本文、見出し、図表、
+          数式、コード等の情報構造はHTMLに保持し、組版上の権威のみをCSSが担当する。
+        </p>
+
+        <h2>2. 効用モデル</h2>
+        <p>学術風テーマの効用を、以下の厳密かつ次元的に若干怪しい式で定義する。</p>
+
+        <div class="dr-equation">
+          \[
+            U_{\mathrm{DR}}
+            =
+            \frac{M^\alpha L^\beta F^\gamma}{1 + W}
+          \]
+        </div>
+
+        <p>
+          ここで \(M\) はMarkdownによる記述容易性、\(L\) は可読性、
+          \(F\) は形式的外観、\(W\) は執筆者負担を表す。
+          望ましい動作点は、著者を組版パッケージ保守者へ転職させることなく
+          \(F\) を最大化する領域に存在する。
+        </p>
+
+        <h2>3. CSSカラムによる段組</h2>
+        <p>
+          本テーマでは、モバイル用とデスクトップ用の段数を直接指定しない。
+          代わりに望ましいカラム幅を指定し、利用可能な横幅に応じた段数の決定を
+          ブラウザへ委任する。
+        </p>
+
+        <figure class="dr-listing">
+          <pre><code>.dr-body {
+  columns: 28rem 2;
+  column-gap: 3rem;
+}
+
+.dr-body h2 {
+  break-after: avoid-column;
+}</code></pre>
+          <figcaption class="dr-caption">
+            Listing 1. 固定ブレークポイントではなく、望ましい本文幅を指定する。
+          </figcaption>
+        </figure>
+
+        <p>
+          狭い画面では自動的に1段組となり、十分な横幅が得られた場合のみ2段組となる。
+          この挙動により、スマートフォンからデスクトップ、印刷までを単一の文書構造で扱える。
+        </p>
+
+        <h2>4. 構成</h2>
+        <figure class="dr-figure dr-wide">
+          <div class="mermaid">
+flowchart LR
+    MD[Markdown] --> HTML[意味論的HTML]
+    TEX[TeX] --> KATEX[KaTeX / MathJax]
+    MM[Mermaid] --> SVG[SVG]
+    HTML --> CSS[definitely-reviewed.css]
+    KATEX --> CSS
+    SVG --> CSS
+    CSS --> WEB[レスポンシブWeb]
+    CSS --> PRINT[印刷 / PDF]
+          </div>
+          <figcaption class="dr-caption">
+            Figure 1. 本文、数式、図式を通常のHTMLへ収束させ、最終段階で組版を適用する。
+          </figcaption>
+        </figure>
+
+        <h2>5. 横長要素と分断制御</h2>
+        <p>
+          CSS Multi-column Layoutでは、カラム境界により文書が分断される。
+          単純に横長図へ <code>column-span: all</code> を指定すると、
+          図の直前にある節見出しだけが右カラム末尾へ取り残される場合がある。
+          本テーマでは、各節を特殊なコンテナで包まずにこの問題を回避する。
+        </p>
+
+        <figure class="dr-listing dr-wide">
+          <pre><code>.dr-wide {
+  column-span: all;
+}
+
+.dr-body :is(h1, h2, h3, h4):has(+ .dr-wide) {
+  column-span: all;
+  break-after: avoid;
+}</code></pre>
+          <figcaption class="dr-caption">
+            Listing 2. 横長要素の直前にある見出しを、同一の全段コンテキストへ昇格させる。
+          </figcaption>
+        </figure>
+
+        <h2>6. 評価</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>条件</th>
+              <th>学術的外観</th>
+              <th>執筆負担</th>
+              <th>査読済み感</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>素のMarkdown</td><td>0.31</td><td>1.00</td><td>0.12</td></tr>
+            <tr><td>一般的なブログCSS</td><td>0.54</td><td>1.03</td><td>0.37</td></tr>
+            <tr>
+              <td><strong>definitely-reviewed</strong></td>
+              <td><strong>0.97</strong></td>
+              <td><strong>1.04</strong></td>
+              <td><strong>1.00</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="dr-note">
+          各値は正規化済み・無次元であり、著者にとって都合のよい値を採用した。
+        </div>
+
+        <h2>7. 利用方法</h2>
+        <p>最小構成では、スタイルシート1枚と少数の意味論的クラスのみを必要とする。</p>
+
+        <figure class="dr-listing">
+          <pre><code>&lt;link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/definitely-reviewed@1.0.0/definitely-reviewed.css"&gt;
+
+&lt;article class="dr-paper"&gt;
+  &lt;header class="dr-header"&gt;…&lt;/header&gt;
+  &lt;div class="dr-body"&gt;…&lt;/div&gt;
+&lt;/article&gt;</code></pre>
+          <figcaption class="dr-caption">Listing 3. 最小導入例。</figcaption>
+        </figure>
+
+        <p>
+          数式および図式のレンダラは独立している。
+          KaTeX、MathJax、Mermaid、事前生成SVG等を任意に利用でき、
+          本テーマはその周辺の組版のみを担当する。
+        </p>
+
+        <h2>8. 行政的・権威的表示</h2>
+        <p>文書へ追加の威圧感が必要な場合、任意機能として各種ハンコを利用できる。</p>
+
+        <p>
+          <span class="dr-stamp" data-kind="confidential">部外秘</span>
+          &nbsp;
+          <span class="dr-stamp" data-kind="rejected">不採択</span>
+          &nbsp;
+          <span class="dr-stamp" data-kind="accepted">採択</span>
+        </p>
+
+        <h2>9. 妥当性への脅威</h2>
+        <p>
+          本研究における最大の妥当性への脅威は、本スタイルシートを利用するために
+          実際の査読を受ける必要がない点である。
+        </p>
+
+        <blockquote>
+          査読者2：厳密そうな見た目と、方法論的な厳密さを混同すべきではない。
+        </blockquote>
+
+        <h2>10. 結論</h2>
+        <p>
+          現代CSSは、Markdown-firstな執筆体験を維持したまま、
+          レスポンシブかつ印刷可能な学術風組版を実現するのに十分な表現力を有する。
+        </p>
+
+        <div class="dr-equation">
+          \[
+            \mathrm{Markdown} + \mathrm{CSS}
+            \xrightarrow{\text{definitely-reviewed}}
+            \mathrm{学術っぽさ}
+          \]
+        </div>
+
+        <p><strong>Markdownを入れる。学術っぽさが出る。</strong></p>
+
+        <h2>参考文献</h2>
+        <ol class="dr-references">
+          <li>
+            W3C CSS Working Group,
+            <a href="https://www.w3.org/TR/css-multicol-1/">
+              <cite>CSS Multi-column Layout Module Level 1</cite>
+            </a>, 2024.
+          </li>
+          <li>
+            W3C CSS Working Group,
+            <a href="https://www.w3.org/TR/css-break-3/">
+              <cite>CSS Fragmentation Module Level 3</cite>
+            </a>.
+          </li>
+          <li>
+            KaTeX Contributors,
+            <a href="https://katex.org/docs/">
+              <cite>KaTeX Documentation</cite>
+            </a>.
+          </li>
+          <li>
+            Mermaid Contributors,
+            <a href="https://mermaid.js.org/">
+              <cite>Mermaid Documentation</cite>
+            </a>.
+          </li>
+          <li>
+            Akane, M. F.,
+            <a href="http://github.com/mfakane/definitely-reviewed">
+              <cite>definitely-reviewed, GitHub repository</cite>
+            </a>, 2026.
+          </li>
+          <li>著者の強い確信, 私信, 2026.</li>
+        </ol>
+      </div>
+    </article>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+    const root = document.documentElement;
+    const langButtons = [...document.querySelectorAll("[data-lang-choice]")];
+    const themeButtons = [...document.querySelectorAll("[data-theme-choice]")];
+
+    function setLanguage(lang) {
+      const normalized = lang === "ja" ? "ja" : "en";
+      root.dataset.drLang = normalized;
+      root.lang = normalized;
+      localStorage.setItem("dr-demo-lang", normalized);
+
+      for (const button of langButtons) {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.langChoice === normalized)
+        );
+      }
+    }
+
+    function setTheme(theme) {
+      const normalized = theme === "paper" ? "paper" : "web";
+
+      if (normalized === "paper") root.dataset.drTheme = "paper";
+      else delete root.dataset.drTheme;
+
+      localStorage.setItem("dr-demo-theme", normalized);
+
+      for (const button of themeButtons) {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.themeChoice === normalized)
+        );
+      }
+    }
+
+    setLanguage(localStorage.getItem("dr-demo-lang") || (window.navigator.language?.startsWith("ja") ? "ja" : "en"));
+    setTheme(localStorage.getItem("dr-demo-theme") || "web");
+
+    for (const button of langButtons) {
+      button.addEventListener("click", () => setLanguage(button.dataset.langChoice));
+    }
+
+    for (const button of themeButtons) {
+      button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
+    }
+
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false
+    });
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "neutral"
+    });
+    await mermaid.run({ querySelector: ".mermaid" });
+  </script>
+</body>
+</html>

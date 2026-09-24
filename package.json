@@ -1,0 +1,17 @@
+{
+  "name": "definitely-reviewed",
+  "version": "1.0.0",
+  "description": "A responsive scholarly CSS theme that gives Markdown-derived documents the typesetting and visual appearance of academic papers and technical reports.",
+  "license": "CC0-1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfakane/definitely-reviewed.git"
+  },
+  "style": "definitely-reviewed.css",
+  "files": [
+    "definitely-reviewed.css",
+    "README.md",
+    "README.ja.md",
+    "LICENSE"
+  ]
+}
