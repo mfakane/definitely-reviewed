@@ -530,6 +530,8 @@ flowchart LR
     const root = document.documentElement;
     const langButtons = [...document.querySelectorAll("[data-lang-choice]")];
     const themeButtons = [...document.querySelectorAll("[data-theme-choice]")];
+    const languageContent = [...document.querySelectorAll("[data-dr-content-lang]")];
+    let mermaidInitialized = false;
 
     function setLanguage(lang) {
       const normalized = lang === "ja" ? "ja" : "en";
@@ -543,6 +545,27 @@ flowchart LR
           String(button.dataset.langChoice === normalized)
         );
       }
+
+      void renderMermaidForLanguage(normalized);
+    }
+
+    async function renderMermaidForLanguage(lang) {
+      if (!mermaidInitialized) return;
+
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+
+      if (root.dataset.drLang !== lang) return;
+
+      const content = languageContent.find(
+        (element) => element.dataset.drContentLang === lang
+      );
+      const nodes = content
+        ? [...content.querySelectorAll(".mermaid")].filter(
+            (node) => !node.hasAttribute("data-processed")
+          )
+        : [];
+
+      if (nodes.length > 0) await mermaid.run({ nodes });
     }
 
     function setTheme(theme) {
@@ -584,7 +607,8 @@ flowchart LR
       startOnLoad: false,
       theme: "neutral"
     });
-    await mermaid.run({ querySelector: ".mermaid" });
+    mermaidInitialized = true;
+    await renderMermaidForLanguage(root.dataset.drLang);
   </script>
 </body>
 </html>
